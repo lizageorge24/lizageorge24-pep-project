@@ -1,10 +1,14 @@
 package Controller;
 
+import java.sql.SQLException;
+import java.util.List;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import Model.Account;
+import Model.Message;
 import Service.AccountService;
 import Service.MessageService;
 import io.javalin.Javalin;
@@ -33,10 +37,8 @@ public class SocialMediaController {
         app.get("example-endpoint", this::exampleHandler);
         app.post("/register",this::postNewAccountHandler);
         app.post("/login",this::postExistingAccountHandler);
-        /*app.get("/books", this::getAllBooksHandler);
-        app.get("/authors", this::getAllAuthorsHandler);
-        app.get("/books/available", this::getAvailableBooksHandler);*/
-        //app.start(8080); 
+        app.post("/messages", this::postNewMessageHandler);
+        app.get("/messages", this::getMessageHandler);
 
         return app;
     }
@@ -75,6 +77,25 @@ public class SocialMediaController {
             context.status(401);
         }
 
+    }
+
+    //Handler to post a new message
+    private void postNewMessageHandler(Context context) throws JsonMappingException, JsonProcessingException{
+        ObjectMapper mapper = new ObjectMapper();
+        Message message = mapper.readValue(context.body(),Message.class);
+        Message newMessage = messageService.newMessage(message);
+        if(newMessage!=null){
+            context.json(mapper.writeValueAsString(newMessage));
+        }
+        else{
+            context.status(400);
+        }
+    }
+
+    //Handler to retrieve all messages
+    private void getMessageHandler(Context cxt) throws SQLException{
+        List<Message> message = messageService.getAllMessages();
+        cxt.json(message);
     }
 
 
