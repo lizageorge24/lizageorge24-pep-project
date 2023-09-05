@@ -26,5 +26,12 @@ public class MessageService {
     public List<Message> getAllMessages() throws SQLException {
         return messageDAO.getAllMessages();
     }
-    
+
+    //Method to get a message based on message_id
+    public Message getMessageBasedOnId(int messageId) {
+        return messageDAO.getMessageBasedOnId(messageId);
+
+    }
 }
+    
+

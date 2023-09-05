@@ -39,6 +39,7 @@ public class SocialMediaController {
         app.post("/login",this::postExistingAccountHandler);
         app.post("/messages", this::postNewMessageHandler);
         app.get("/messages", this::getMessageHandler);
+        app.get("/messages/{message_id}", this::getMessageBasedOnIdHandler);
 
         return app;
     }
@@ -96,6 +97,13 @@ public class SocialMediaController {
     private void getMessageHandler(Context cxt) throws SQLException{
         List<Message> message = messageService.getAllMessages();
         cxt.json(message);
+    }
+
+    //Handler to retrieve a message based on message_id
+    private void getMessageBasedOnIdHandler (Context ctx) throws SQLException {
+        int message_id = Integer.parseInt(ctx.pathParam("message_id"));
+        Message msg = messageService.getMessageBasedOnId(message_id);
+        ctx.json(msg);
     }
 
 
