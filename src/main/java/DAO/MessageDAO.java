@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import Model.Message;
@@ -67,7 +66,6 @@ public class MessageDAO {
     //Method to get a message based on message_id
     public Message getMessageBasedOnId(int messageId) {
         Connection connection = ConnectionUtil.getConnection();
-        //List<Message> messages = new ArrayList<>();
         try {
             String sql = "SELECT * FROM Message WHERE message_id = ?;";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -75,19 +73,46 @@ public class MessageDAO {
 
             ResultSet resultSet = preparedStatement.executeQuery();
             if(resultSet.next()){
-                Message msg = new Message( resultSet.getInt("message_id"),
+                Message msg = new Message( messageId,
                 resultSet.getInt("posted_by"),
                 resultSet.getString("message_text"),
                 resultSet.getLong("time_posted_epoch"));
-                System.out.println("Check 3: DAO " + msg);
-                //messages.add(msg);
                 return msg;
             }
         } catch(SQLException e){
             System.out.println(e.getMessage());
         }
-        //return messages;
-        return new Message();
+        return null;
     }
-    
+
+    //Method to delete a message based on message_id
+    public Message deleteMessageBasedOnId(int messageId){
+        Connection connection = ConnectionUtil.getConnection();
+        Message deletedMessage = null;
+        try {
+            Message msg = getMessageBasedOnId(messageId);
+            if(msg != null){
+                int id = messageId;
+                int postedBy = msg.posted_by;
+                String messageText = msg.message_text;
+                long time = msg.time_posted_epoch;
+
+                deletedMessage = new Message(id, postedBy, messageText, time);
+
+                String sql = "DELETE FROM Message WHERE message_id =?;";
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+                preparedStatement.setInt(1, messageId);
+                int rows = preparedStatement.executeUpdate();
+
+                if(rows > 0){
+                    //Message was deleted
+                    return deletedMessage;
+                }
+            }
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return null;
+    } 
 }

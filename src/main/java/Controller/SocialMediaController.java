@@ -40,6 +40,7 @@ public class SocialMediaController {
         app.post("/messages", this::postNewMessageHandler);
         app.get("/messages", this::getMessageHandler);
         app.get("/messages/{message_id}", this::getMessageBasedOnIdHandler);
+        app.delete("/messages/{message_id}", this::deleteMessageBasedOnId);
 
         return app;
     }
@@ -108,11 +109,33 @@ public class SocialMediaController {
     private void getMessageBasedOnIdHandler (Context ctx) throws SQLException {
         int message_id = Integer.parseInt(ctx.pathParam("message_id"));
         Message msg = messageService.getMessageBasedOnId(message_id);
-        System.out.println("Check 1: Controller " + msg);
-        System.out.println("Check 2: Controller " + ctx.json(msg));
- 
-        ctx.json(msg);
+        
+        if(msg!= null){
+            //Found the message in database
+            ctx.status(200);
+            ctx.json(msg);
+        }
+        else {
+            //Message is not present in database
+            ctx.status(200);
+        }
+    }
 
+    //API 6: DELETE localhost:8080/messages/{message_id}
+    //Handler to delete a message based on message_id
+    private void deleteMessageBasedOnId(Context ctx){
+       int message_id = Integer.parseInt(ctx.pathParam("message_id"));
+       Message deletedMessage = messageService.deleteMessageBasedOnId(message_id);
+
+       if(deletedMessage!= null){
+        //Message was deleted
+        ctx.status(200);
+        ctx.json(deletedMessage);
+       }
+       else {
+        //Message was not deleted
+        ctx.status(200);
+       }
     }
 
 

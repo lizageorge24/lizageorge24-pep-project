@@ -32,6 +32,11 @@ public class MessageService {
         return messageDAO.getMessageBasedOnId(messageId);
 
     }
+
+    //Method to delete a message based on message_id
+    public Message deleteMessageBasedOnId(int messageId){
+        return messageDAO.deleteMessageBasedOnId(messageId);
+    }
 }
     
 
