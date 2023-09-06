@@ -52,6 +52,7 @@ public class SocialMediaController {
         context.json(context);
     }
 
+    //API 1: POST localhost:8080/register
     //Handler to post a new account
     private void postNewAccountHandler(Context context) throws JsonMappingException, JsonProcessingException{
         ObjectMapper mapper = new ObjectMapper();
@@ -66,6 +67,7 @@ public class SocialMediaController {
 
     }
 
+    //API 2: POST localhost:8080/login
      //Handler to post an existing account
      private void postExistingAccountHandler(Context context) throws JsonMappingException, JsonProcessingException{
         ObjectMapper mapper = new ObjectMapper();
@@ -80,6 +82,7 @@ public class SocialMediaController {
 
     }
 
+    // API 3: POST localhost:8080/messages
     //Handler to post a new message
     private void postNewMessageHandler(Context context) throws JsonMappingException, JsonProcessingException{
         ObjectMapper mapper = new ObjectMapper();
@@ -93,17 +96,23 @@ public class SocialMediaController {
         }
     }
 
+    //API 4: GET localhost:8080/messages
     //Handler to retrieve all messages
     private void getMessageHandler(Context cxt) throws SQLException{
         List<Message> message = messageService.getAllMessages();
         cxt.json(message);
     }
 
+    //API 5: GET localhost:8080/messages/{message_id}
     //Handler to retrieve a message based on message_id
     private void getMessageBasedOnIdHandler (Context ctx) throws SQLException {
         int message_id = Integer.parseInt(ctx.pathParam("message_id"));
         Message msg = messageService.getMessageBasedOnId(message_id);
+        System.out.println("Check 1: Controller " + msg);
+        System.out.println("Check 2: Controller " + ctx.json(msg));
+ 
         ctx.json(msg);
+
     }
 
 

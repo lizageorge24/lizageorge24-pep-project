@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import Model.Message;
@@ -66,22 +67,26 @@ public class MessageDAO {
     //Method to get a message based on message_id
     public Message getMessageBasedOnId(int messageId) {
         Connection connection = ConnectionUtil.getConnection();
+        //List<Message> messages = new ArrayList<>();
         try {
             String sql = "SELECT * FROM Message WHERE message_id = ?;";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, messageId);
 
-            ResultSet result = preparedStatement.executeQuery();
-            if(result.next()){
-                Message msg = new Message( result.getInt("message_id"),
-                result.getInt("posted_by"),
-                result.getString("message_text"),
-                result.getLong("time_posted_epoch"));
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()){
+                Message msg = new Message( resultSet.getInt("message_id"),
+                resultSet.getInt("posted_by"),
+                resultSet.getString("message_text"),
+                resultSet.getLong("time_posted_epoch"));
+                System.out.println("Check 3: DAO " + msg);
+                //messages.add(msg);
                 return msg;
             }
         } catch(SQLException e){
             System.out.println(e.getMessage());
         }
+        //return messages;
         return new Message();
     }
     
