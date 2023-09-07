@@ -42,6 +42,7 @@ public class SocialMediaController {
         app.get("/messages/{message_id}", this::getMessageBasedOnIdHandler);
         app.delete("/messages/{message_id}", this::deleteMessageBasedOnIdHandler);
         app.patch("/messages/{message_id}", this::updateMessageHandler);
+        app.get("/accounts/{account_id}/messages", this::getAllMessagesByUserHandler);
 
         return app;
     }
@@ -157,5 +158,18 @@ public class SocialMediaController {
         }
     }
 
+    //API 8: GET localhost:8080/accounts/{account_id}/messages
+    //Handler to get all messages by a user
+    private void getAllMessagesByUserHandler(Context ctx){
+        int id = Integer.parseInt(ctx.pathParam("account_id"));
+        List<Message> messages = messageService.getAllMessagesByUser(id);
+        if(messages != null){
+            ctx.status(200);
+            ctx.json(messages);
+        }
+        else {
+            ctx.status(200);
+        }
+    }
 
 }
