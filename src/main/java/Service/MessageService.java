@@ -37,6 +37,18 @@ public class MessageService {
     public Message deleteMessageBasedOnId(int messageId){
         return messageDAO.deleteMessageBasedOnId(messageId);
     }
+
+    //Method to update a message based on message_id
+    public Message updateMessage(int messageId, String newMessage){
+        //Validation for existing message_id
+        if(messageDAO.getMessageBasedOnId(messageId)!= null){
+            //If message_id exists, update the message
+            return messageDAO.updateMessage(messageId, newMessage);
+        }
+        else {
+            return null;
+        } 
+    }
 }
     
 

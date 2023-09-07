@@ -114,5 +114,30 @@ public class MessageDAO {
             System.out.println(e.getMessage());
         }
         return null;
-    } 
+    }
+    
+    //Method to update a message based on message_id
+    public Message updateMessage(int messageId, String newMessage) {
+        Connection connection = ConnectionUtil.getConnection();
+        try {
+            String sql = "UPDATE Message SET message_text = ? WHERE message_id = ?;";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            //Validations
+            if(newMessage.isEmpty() || newMessage.length() >= 255){
+                return null;
+            }
+
+            preparedStatement.setString(1, newMessage);
+            preparedStatement.setInt(2, messageId);
+            int rows = preparedStatement.executeUpdate();
+            
+            if(rows > 0){
+                return getMessageBasedOnId(messageId);
+            }
+        } catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
 }

@@ -40,7 +40,8 @@ public class SocialMediaController {
         app.post("/messages", this::postNewMessageHandler);
         app.get("/messages", this::getMessageHandler);
         app.get("/messages/{message_id}", this::getMessageBasedOnIdHandler);
-        app.delete("/messages/{message_id}", this::deleteMessageBasedOnId);
+        app.delete("/messages/{message_id}", this::deleteMessageBasedOnIdHandler);
+        app.patch("/messages/{message_id}", this::updateMessageHandler);
 
         return app;
     }
@@ -123,7 +124,7 @@ public class SocialMediaController {
 
     //API 6: DELETE localhost:8080/messages/{message_id}
     //Handler to delete a message based on message_id
-    private void deleteMessageBasedOnId(Context ctx){
+    private void deleteMessageBasedOnIdHandler(Context ctx){
        int message_id = Integer.parseInt(ctx.pathParam("message_id"));
        Message deletedMessage = messageService.deleteMessageBasedOnId(message_id);
 
@@ -136,6 +137,24 @@ public class SocialMediaController {
         //Message was not deleted
         ctx.status(200);
        }
+    }
+
+    //API 7: PATCH localhost:8080/messages/{message_id}
+    //Handler to update a message based on message_id
+    private void updateMessageHandler (Context ctx) throws JsonMappingException, JsonProcessingException{
+        ObjectMapper mapper = new ObjectMapper();
+        Message newMessage = mapper.readValue(ctx.body(), Message.class);
+        int message_id = Integer.parseInt(ctx.pathParam("message_id"));
+        Message updatedMessage = messageService.updateMessage(message_id, newMessage.message_text);
+
+        if(updatedMessage!= null){
+            //Message was updated
+            ctx.status(200);
+            ctx.json(updatedMessage);
+        }
+        else {
+            ctx.status(400);
+        }
     }
 
 
